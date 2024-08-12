@@ -7,8 +7,11 @@ import com.tinqinacademy.emails.api.errors.ErrorOutput;
 import io.vavr.API;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.thymeleaf.TemplateEngine;
 
 import java.util.List;
 
@@ -18,8 +21,8 @@ import static io.vavr.Predicates.instanceOf;
 
 @RequiredArgsConstructor
 public abstract class BaseProcessor {
-	protected final ConversionService conversionService;
-	protected final Validator validator;
+	protected final JavaMailSender sender;
+	protected final TemplateEngine engine;
 
 	protected API.Match.Case<Exception, ErrorOutput> customCase(Throwable throwable, HttpStatus status,
 																Class<? extends Exception> e) {

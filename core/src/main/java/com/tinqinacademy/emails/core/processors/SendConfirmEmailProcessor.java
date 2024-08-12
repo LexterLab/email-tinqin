@@ -25,18 +25,13 @@ import static io.vavr.API.Match;
 @Service
 @Slf4j
 public class SendConfirmEmailProcessor extends BaseProcessor implements SendConfirmEmail {
-	private final JavaMailSender sender;
-	private final TemplateEngine engine;
 	@Value("${email.from}")
 	private String emailSender;
 
-
-	public SendConfirmEmailProcessor(ConversionService conversionService, Validator validator,
-									 JavaMailSender sender, TemplateEngine engine) {
-		super(conversionService, validator);
-		this.sender = sender;
-		this.engine = engine;
+	public SendConfirmEmailProcessor(JavaMailSender sender, TemplateEngine engine) {
+		super(sender, engine);
 	}
+
 
 	@Override
 	public Either<ErrorOutput, SendConfirmEmailOutput> process(SendConfirmEmailInput input) {
