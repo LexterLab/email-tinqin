@@ -1,16 +1,14 @@
 package com.tinqinacademy.emails.core.processors;
 
 import com.tinqinacademy.emails.api.errors.ErrorOutput;
-import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmail;
-import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailInput;
-import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailOutput;
+import com.tinqinacademy.emails.api.operations.sendrecoveryemail.SendRecoveryEmail;
+import com.tinqinacademy.emails.api.operations.sendrecoveryemail.SendRecoveryEmailInput;
+import com.tinqinacademy.emails.api.operations.sendrecoveryemail.SendRecoveryEmailOutput;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -24,29 +22,28 @@ import static io.vavr.API.Match;
 
 @Service
 @Slf4j
-public class SendConfirmEmailProcessor extends BaseProcessor implements SendConfirmEmail {
+public class SendRecoveryEmailProcessor extends BaseProcessor implements SendRecoveryEmail {
 	@Value("${email.from}")
 	private String emailSender;
 
-	public SendConfirmEmailProcessor(JavaMailSender sender, TemplateEngine engine) {
+	public SendRecoveryEmailProcessor(JavaMailSender sender, TemplateEngine engine) {
 		super(sender, engine);
 	}
 
-
 	@Override
-	public Either<ErrorOutput, SendConfirmEmailOutput> process(SendConfirmEmailInput input) {
-		log.info("Start sendConfirmEmail {}", input);
+	public Either<ErrorOutput, SendRecoveryEmailOutput> process(SendRecoveryEmailInput input) {
+		log.info("Start sendRecoveryEmail {}", input);
 		return Try.of(() -> {
 					Context context = new Context(Locale.ENGLISH, Map.of("email",input.getRecipient(),
 							"code", input.getCode()));
 					MimeMessage message = sender.createMimeMessage();
 					MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 					helper.setFrom(emailSender);
-					helper.setText(engine.process("email-confirmation", context), true);
+					helper.setText(engine.process("recovery-email", context), true);
 					helper.setTo(input.getRecipient());
-					helper.setSubject("Email Confirmation");
+					helper.setSubject("Password Recovery Request");
 					sender.send(message);
-					SendConfirmEmailOutput output = SendConfirmEmailOutput.builder().build();
+					SendRecoveryEmailOutput output = SendRecoveryEmailOutput.builder().build();
 					log.info("End sendConfirmEmail {}", output);
 					return output;
 				}).toEither()
@@ -54,6 +51,4 @@ public class SendConfirmEmailProcessor extends BaseProcessor implements SendConf
 						defaultCase(throwable)
 				));
 	}
-
-
 }
