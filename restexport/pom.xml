@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>com.tinqinacademy.emails</groupId>
-        <artifactId>email</artifactId>
+        <groupId>com.tinqinacademy.emailservice</groupId>
+        <artifactId>tinqin-email</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.tinqinacademy.emails</groupId>
+            <groupId>com.tinqinacademy.emailservice</groupId>
             <artifactId>api</artifactId>
             <version>${revision}</version>
         </dependency>
